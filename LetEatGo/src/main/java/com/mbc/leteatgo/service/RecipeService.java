@@ -525,7 +525,7 @@ public class RecipeService {
 //			
 //			count++;
 			
-			// 강철새잎 10새기 거르기
+			// 강철새잎 거르기
 			if (recipe_ogWriter.equals("강철새잎")) {
 				recipe_ogWriter = "";
 			}
