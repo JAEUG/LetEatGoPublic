@@ -83,6 +83,7 @@ public class SecurityConfig {
 						                .requestMatchers("/findId").permitAll()
 						                .requestMatchers("/ranking/").permitAll()
 						                .requestMatchers("/member/login.do").permitAll()
+						                .requestMatchers("/member/emailChk").permitAll()
 //						                .requestMatchers("/swagger-resources/**", "/swagger/**", "/swagger-ui.html").permitAll()
 						                .requestMatchers("/member/hasFld/**").permitAll()
 						                .requestMatchers("/member/view.do", "/member/hasFldForUpdate/**").authenticated()

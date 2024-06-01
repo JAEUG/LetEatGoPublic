@@ -98,6 +98,81 @@ function getPostcodeAddress() {
 
 
 window.onload=function(){
+			
+			
+			// 0601
+			// 이메일 인증 div
+			let emailAuthPnl = document.querySelector(".email_auth_pnl");
+			
+			console.log("확인용: " + emailAuthPnl);
+
+			// 인증 이메일 전송 버튼
+			let emailChkBtn = document.getElementById("emailCheck_btn");
+			
+			// 인증코드 입력 후 인증하기 버튼
+			let authCodeCheckBtn = document.getElementById("authCodeCheck_btn");
+			
+			console.log("확인용2: " + emailChkBtn);
+			
+			// 전체 페이지내에서 쓰기 위해 onload에서 미리 정의
+			let resData2 = "";
+			
+			// 전체 페이지내에서 쓰기 위해 onload에서 미리 정의
+			let authCodeCheckResult = false;
+			
+			// 처음에는 숨겨져있음
+			emailAuthPnl.style.display = 'none';
+			
+			emailChkBtn.onclick = function(e) {
+				
+				let memberEmail = document.getElementById("memberEmail");
+				
+				let memberEmailValue = memberEmail.value;
+				
+				console.log("확인용3: " + memberEmail);
+				console.log("확인용4: " + memberEmailValue);
+				
+				emailAuthPnl.style.display = 'flex';
+				
+				const Data = {emailValue: memberEmailValue};
+				
+				axios.post(`/member/emailChk`, Data)
+				.then(function(response) {
+					resData2 = response.data;
+					
+					alert(resData2);
+					
+					console.log(resData2);
+					
+				})
+				.catch(function(err) {
+					console.log("axios 통신 에러 발생!" + err);
+				});// axios
+				
+			}// onclick
+			
+			
+			
+			authCodeCheckBtn.onclick = function(e) {
+				
+				let authCodeInputValue = document.getElementById("memberEmail2").value;
+				
+				if (resData2 == authCodeInputValue) {
+					
+					alert("인증에 성공하였습니다.");
+					authCodeCheckResult = true;
+					
+				} else if (resData2 != authCodeInputValue) {
+					
+					alert("인증에 실패하였습니다.");
+					authCodeCheckResult = false;
+				}
+				
+				console.log("※ 인증 여부: " + authCodeCheckResult);
+				
+			}// onlclick
+			
+			// //0601
         	
         	let doubledIdCheck = false;
         	
@@ -167,13 +242,12 @@ window.onload=function(){
         	// 중복 체크해야 회원가입 버튼 활성화
         	frm.onsubmit = function(e){
         		
-        		if(doubledIdCheck == true && doubledNickCheck == true){
+        		if(doubledIdCheck == true && doubledNickCheck == true && authCodeCheckResult == true){
         			return true;
-        		}else{
-        			alert("중복 체크를 확인해 주세요")
-            		return false;
-        		}
-        		
+        		} else {
+					alert("잠깐! 아이디, 닉네임 중복체크나 이메일 인증을 완료하셨는지 확인해주세요");
+					return false;
+				}// if
         	}
         	
             // (검색된) 주소 삭제

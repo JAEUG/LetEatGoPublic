@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.mbc.leteatgo.service.EmailService;
 import com.mbc.leteatgo.service.MemberService;
 import com.mbc.leteatgo.domain.MemberDTO;
 import com.mbc.leteatgo.domain.MemberUpdateDTO;
@@ -31,6 +31,10 @@ public class MemberRestController {
 	
 	@Autowired
 	MemberService memberService;
+	
+	// 0601
+	@Autowired
+	EmailService emailSvc;
 	 
 	// REST Test (swagger) ready
 	@GetMapping("/hasFldForUpdate/{id}/{fld}/{val}")
@@ -275,5 +279,63 @@ public class MemberRestController {
 		
 		return responseEntity;		
 	} //
+	
+	
+	// 0601
+	
+	@PostMapping("/emailChk")
+	public ResponseEntity<String> emailChk(@RequestBody String emailValue) {
+		
+		ResponseEntity<String> responseEntity = null;
+		
+		log.info("★★★ 인자 확인 부분!!");
+		
+		log.info("★★★ eamilValue: {}", emailValue.toString().split(":")[1].replace("\"", "").replace("}", ""));
+		
+		
+		String result = emailValue.toString().split(":")[1].replace("\"", "").replace("}", "");
+		String msg = "";
+		boolean success = false;
+		
+		try { 
+			
+			log.info("★★★ result : {}", result);
+			// 이메일 전송 부분
+			
+			int randomNum = (int)(Math.random() * (999999 - 100000 + 1) + 100000);
+			
+			String authCode = Integer.toString(randomNum);
+			
+			success = emailSvc.sendSimpleMessage("thisOneIsForTeamChoco@gmail.com",
+													result,
+													"LetEatGo 인증 이메일입니다.", 
+													"LEG-" + authCode);
+			
+			
+			if (success == true) {
+				// 성공 코드(200)
+//				msg = "axios 통신 성공 + email 확보 성공 +";
+				log.info("●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●");
+				responseEntity = new ResponseEntity<>(authCode, HttpStatus.OK);
+				
+			} else if (success == false) {
+				// 실패 코드(204)
+				msg = "axios 통신 성공 + email 확보 실패?";
+				log.info("◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆");
+				responseEntity = new ResponseEntity<>(msg, HttpStatus.NO_CONTENT);
+			}
+			
+		} catch (Exception e) {
+			log.error("emailChk error : {}", e);
+			e.printStackTrace();
+			
+			// 실패 코드(417) : 내부 서버 에러
+			responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		log.info("★★★ 마지막 리턴 부분");
+		return responseEntity;
+	}// emailChk()
+	
 	
 }

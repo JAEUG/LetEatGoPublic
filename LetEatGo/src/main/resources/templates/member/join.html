@@ -25,10 +25,11 @@
 	<script>
 	
 		// 아이디,닉네임 중복 체크
-        
+		// 이메일 인증
         	
 	</script>
 	<link th:href="@{'/css/member_join.css'}" rel="stylesheet" />
+
 
 </head>
 
@@ -143,10 +144,24 @@
                 </div>    
                 <div class="fld_content">
                     <input type="email" id="memberEmail" name="memberEmail" th:field="*{memberEmail}" placeholder=" ex) abcd@abcd.com"/>
+                    <button type="button" id="emailCheck_btn">이메일 인증</button>
                 </div>
+                
             </div>
             <!-- 유효성 검사 실패 메시지 표시 -->
             <small class="text-danger" th:if="${#fields.hasErrors('memberEmail')}" th:errors="*{memberEmail}"></small>
+            
+            <!-- 0601 -->
+            <div id="email_fld_pnl" class="email_auth_pnl">
+	            <div class="fld_label">
+	                <label for="email"></label>
+	            </div>
+	            <div class="fld_content">
+		            <input type="text" id="memberEmail2" name="memberEmail2" placeholder="인증번호를 입력해주세요"/>
+		            <button type="button" id="authCodeCheck_btn">인증받기</button>
+	            </div>
+            </div>
+            <!--// 0601 -->
             <!--// 회원 이메일 -->
                 
             <!-- 회원  연락처(휴대폰) -->	
